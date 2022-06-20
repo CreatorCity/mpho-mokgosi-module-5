@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "312801848043",
+    "project_id": "my-mtn-app-database",
+    "storage_bucket": "my-mtn-app-database.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312801848043:android:dc049a47ae9bdf68ccecae",
+        "android_client_info": {
+          "package_name": "com.example.student_wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312801848043-0lsl02vo1diqfom9gpb39voa4c73nc1u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAVByxWl_QIDxwjnxb_UlYdTpF1EvAs48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "312801848043-0lsl02vo1diqfom9gpb39voa4c73nc1u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
