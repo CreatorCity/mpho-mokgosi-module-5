@@ -1,19 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const signup());
-}
-
-class signup extends StatelessWidget {
-  const signup({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: _MyHomePageState(),
-    );
-  }
-}
+import 'package:student_wallet/login_page.dart';
 
 class _MyHomePageState extends StatefulWidget {
   const _MyHomePageState({Key? key}) : super(key: key);
@@ -23,151 +11,161 @@ class _MyHomePageState extends StatefulWidget {
 }
 
 class __MyHomePageStateState extends State<_MyHomePageState> {
+  Future<FirebaseApp> _initializeFirebase() async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+    return firebaseApp;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.fromLTRB(5.0, 50.0, 0.0, 0.0),
-                  child: const Text('Register',
-                      style: TextStyle(
-                          fontSize: 80.0, fontWeight: FontWeight.bold)),
+      body: FutureBuilder(
+          future: _initializeFirebase(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return const Signup();
+            }
+
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
+    );
+  }
+}
+
+class Signup extends StatefulWidget {
+  const Signup({Key? key}) : super(key: key);
+
+  @override
+  State<Signup> createState() => _SignupState();
+}
+
+class _SignupState extends State<Signup> {
+  //login Function
+  static Future<User?> loginUsingEmailPassword(
+      {required String email,
+      required String password,
+      required BuildContext context}) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user;
+    try {
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      user = userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        print("No User found for that email");
+      }
+    }
+    return user;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //create the textfield controller
+    TextEditingController _namecontroller = TextEditingController();
+    TextEditingController _surnamecontroller = TextEditingController();
+    TextEditingController _idnumbercontroller = TextEditingController();
+    TextEditingController _studentnumbercontroller = TextEditingController();
+    TextEditingController _passwordcontroller = TextEditingController();
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'SignUp',
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 28.0,
+                fontWeight: FontWeight.bold),
+          ),
+          const Text("SignUp your Account",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 44,
+                  fontWeight: FontWeight.bold)),
+          const SizedBox(height: 44),
+          TextField(
+              controller: _namecontroller,
+              keyboardType: TextInputType.name,
+              decoration: const InputDecoration(
+                hintText: "Name",
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Colors.black,
                 ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(330.0, 80.0, 0.0, 0.0),
-                  child: const Icon(
-                    Icons.school_rounded,
-                    size: 50,
-                  ),
+              )),
+          const SizedBox(height: 26),
+          TextField(
+              controller: _surnamecontroller,
+              keyboardType: TextInputType.name,
+              decoration: const InputDecoration(
+                hintText: "Surname",
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Colors.black,
                 ),
-              ],
-            ),
-            Container(
-              padding:
-                  const EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
-              child: Column(
-                children: const <Widget>[
-                  TextField(
-                    decoration: InputDecoration(
-                        labelText: 'Name',
-                        labelStyle: TextStyle(
-                            fontFamily: 'montserrat',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green))),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                        labelText: 'Surname',
-                        labelStyle: TextStyle(
-                            fontFamily: 'montserrat',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green))),
-                    obscureText: true,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                        labelText: 'ID Number',
-                        labelStyle: TextStyle(
-                            fontFamily: 'montserrat',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green))),
-                    obscureText: true,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                        labelText: 'Student Number',
-                        labelStyle: TextStyle(
-                            fontFamily: 'montserrat',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green))),
-                    obscureText: true,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: TextStyle(
-                            fontFamily: 'montserrat',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green))),
-                    obscureText: true,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 5.0),
-            const SizedBox(height: 40.0),
-            Container(
-              height: 40.0,
-              child: Material(
-                borderRadius: BorderRadius.circular(20.0),
-                shadowColor: Colors.greenAccent,
-                color: Colors.green,
-                elevation: 7.0,
-                child: GestureDetector(
-                  onTap: () {},
-                  child: const Center(
-                    child: Text(
-                      'REGISTER',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Montserrat'),
-                    ),
-                  ),
+              )),
+          const SizedBox(height: 26),
+          TextField(
+              controller: _idnumbercontroller,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                hintText: "ID Number",
+                prefixIcon: Icon(
+                  Icons.numbers,
+                  color: Colors.black,
                 ),
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            Container(
-              height: 40.0,
-              color: Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Colors.black,
-                        style: BorderStyle.solid,
-                        width: 1.0),
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(20.0)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Center(
-                      child: Icon(Icons.done),
-                    )
-                  ],
+              )),
+          const SizedBox(height: 26),
+          TextField(
+              controller: _studentnumbercontroller,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                hintText: "Student Number",
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Colors.black,
                 ),
-              ),
-            ),
-            const SizedBox(height: 15.0),
-          ]),
+              )),
+          const SizedBox(height: 26),
+          TextField(
+              controller: _passwordcontroller,
+              obscureText: true,
+              decoration: const InputDecoration(
+                hintText: "Password",
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Colors.black,
+                ),
+              )),
+          const SizedBox(height: 88),
+          Container(
+            width: double.infinity,
+            child: RawMaterialButton(
+                onPressed: () async {
+                  User? user = await loginUsingEmailPassword(
+                      email: _namecontroller.text,
+                      password: _passwordcontroller.text,
+                      context: context);
+                  print(user);
+                  if (user != null) {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+                  }
+                },
+                child: const Text(
+                  "Sign Up",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                )),
+          )
+        ],
+      ),
     );
   }
 }

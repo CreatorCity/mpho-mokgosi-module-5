@@ -1,6 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:student_wallet/main.dart';
+import 'package:student_wallet/login_page.dart';
 
 import 'dashboard.dart';
 
